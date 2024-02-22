@@ -39,6 +39,12 @@ public class GenericObjectPool<T> where T : class
         throw new NotImplementedException(" Child class have not Implemented CreateItem()");
     }
 
+    public void ReturnItem(T item)
+    {
+        PooledItem<T> pooledItem = pooledItems.Find(i => i.Item.Equals(item));
+        pooledBullet.isUsed = false;
+    }
+
     public class PooledItem<T>
     {
         public T Item;
