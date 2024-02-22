@@ -1,55 +1,52 @@
-using CosmicCuration.Bullets;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
-using static CosmicCuration.Bullets.BulletPool;
-
-public class GenericObjectPool<T> where T : class
-{
-    private List<PooledItem<T>> pooledItems = new List<PooledItem<T>>();
 
 
-    protected T GetItem()
+    /// <summary>
+    /// This is a Generic Object Pool Class with basic functionality, which can be inherited to implement object pools for any type of objects.
+    /// </summary>
+    /// <typeparam object Type to be pooled = "T"></typeparam>
+    public class GenericObjectPool<T> where T : class
     {
-        if (pooledItems.Count > 0)
+        public List<PooledItem<T>> pooledItems = new List<PooledItem<T>>();
+
+        protected T GetItem()
         {
-            PooledItem<T> item = pooledItems.Find(item => !item.isUsed);
-            if (item != null)
+            if (pooledItems.Count > 0)
             {
-                item.isUsed = true;
-                return item.Item;
+                PooledItem<T> item = pooledItems.Find(item => !item.isUsed);
+                if (item != null)
+                {
+                    item.isUsed = true;
+                    return item.Item;
+                }
             }
+            return CreateNewPooledItem();
         }
-        return CreateNewPooledItem();
+
+        private T CreateNewPooledItem()
+        {
+            PooledItem<T> newItem = new PooledItem<T>();
+            newItem.Item = CreateItem();
+            newItem.isUsed = true;
+            pooledItems.Add(newItem);
+            return newItem.Item;
+        }
+
+        protected virtual T CreateItem()
+        {
+            throw new NotImplementedException("CreateItem() method not implemented in derived class");
+        }
+
+        public void ReturnItem(T item)
+        {
+            PooledItem<T> pooledItem = pooledItems.Find(i => i.Item.Equals(item));
+            pooledItem.isUsed = false;
+        }
+
+        public class PooledItem<T>
+        {
+            public T Item;
+            public bool isUsed;
+        }
     }
-
-    private T CreateNewPooledItem()
-    {
-        PooledItem<T> newItem = new PooledItem<T>();
-        newItem.Item = CreateItem();
-        newItem.isUsed = true;
-        pooledItems.Add(newItem);
-        return newItem.Item;
-    }
-
-    protected virtual T CreateItem()
-    {
-        throw new NotImplementedException(" Child class have not Implemented CreateItem()");
-    }
-
-    public void ReturnItem(T item)
-    {
-        PooledItem<T> pooledItem = pooledItems.Find(i => i.Item.Equals(item));
-        pooledItem.isUsed = false;
-    }
-
-    public class PooledItem<T>
-    {
-        public T Item;
-        public bool isUsed;
-    }
-}
-
-
