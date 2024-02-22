@@ -34,7 +34,7 @@ public class GenericObjectPool<T> where T : class
         return newItem.Item;
     }
 
-    private T CreateItem()
+    protected virtual T CreateItem()
     {
         throw new NotImplementedException(" Child class have not Implemented CreateItem()");
     }
@@ -42,7 +42,7 @@ public class GenericObjectPool<T> where T : class
     public void ReturnItem(T item)
     {
         PooledItem<T> pooledItem = pooledItems.Find(i => i.Item.Equals(item));
-        pooledBullet.isUsed = false;
+        pooledItem.isUsed = false;
     }
 
     public class PooledItem<T>
