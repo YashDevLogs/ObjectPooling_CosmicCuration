@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,4 +16,4 @@ namespace CosmicCuration.VFX
         public VFXType type;
         public VFXView prefab;
     }
-}
+}*/
